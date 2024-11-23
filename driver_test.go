@@ -1,7 +1,7 @@
 package impala
 
 import (
-	"io/ioutil"
+	"io"
 	"testing"
 )
 
@@ -12,35 +12,35 @@ func TestParseURI(t *testing.T) {
 	}{
 		{
 			"impala://localhost",
-			Options{Host: "localhost", Port: "21050", BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://localhost:21000",
-			Options{Host: "localhost", Port: "21000", BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21000", BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://admin@localhost",
-			Options{Host: "localhost", Port: "21050", Username: "admin", BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", Username: "admin", BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://admin:password@localhost",
-			Options{Host: "localhost", Port: "21050", Username: "admin", Password: "password", BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", Username: "admin", Password: "password", BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://admin:p%40ssw0rd@localhost",
-			Options{Host: "localhost", Port: "21050", Username: "admin", Password: "p@ssw0rd", BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", Username: "admin", Password: "p@ssw0rd", BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://admin:p%40ssw0rd@localhost?auth=ldap",
-			Options{Host: "localhost", Port: "21050", Username: "admin", Password: "p@ssw0rd", UseLDAP: true, BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", Username: "admin", Password: "p@ssw0rd", UseLDAP: true, BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://localhost?tls=true&ca-cert=/etc/ca.crt",
-			Options{Host: "localhost", Port: "21050", UseTLS: true, CACertPath: "/etc/ca.crt", BatchSize: 1024, BufferSize: 4096, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", UseTLS: true, CACertPath: "/etc/ca.crt", BatchSize: 1024, BufferSize: 4096, LogOut: io.Discard},
 		},
 		{
 			"impala://localhost?batch-size=2048&buffer-size=2048",
-			Options{Host: "localhost", Port: "21050", BatchSize: 2048, BufferSize: 2048, LogOut: ioutil.Discard},
+			Options{Host: "localhost", Port: "21050", BatchSize: 2048, BufferSize: 2048, LogOut: io.Discard},
 		},
 	}
 

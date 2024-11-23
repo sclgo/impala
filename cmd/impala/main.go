@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -61,10 +61,8 @@ func main() {
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
-		select {
-		case <-sig:
-			cancel()
-		}
+		<-sig
+		cancel()
 	}()
 
 	if timeout != 0 {
@@ -82,7 +80,7 @@ func main() {
 	}
 
 	if stdinstat.Mode()&os.ModeNamedPipe != 0 {
-		bytes, err := ioutil.ReadAll(os.Stdin)
+		bytes, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -162,16 +160,5 @@ func query(ctx context.Context, opts *impala.Options, query string) error {
 		return err
 	}
 	fmt.Printf("Fetch %d rows(s) in %.2fs\n", results, time.Duration(time.Since(startTime)).Seconds())
-	return nil
-}
-
-func exec(ctx context.Context, db *sql.DB, query string) error {
-	res, err := db.ExecContext(ctx, query)
-	if err != nil {
-		return err
-	}
-
-	log.Print(res)
-	fmt.Print("The operation has no results.\n")
 	return nil
 }

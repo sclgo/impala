@@ -139,7 +139,10 @@ func (t *TSaslTransport) Flush(ctx context.Context) error {
 	payload = append(payload, byte(v>>24), byte(v>>16), byte(v>>8), byte(v))
 	payload = append(payload, in...)
 
-	t.trans.Write(payload)
+	wn, err := t.trans.Write(payload)
+	if err != nil {
+		return fmt.Errorf("sasl: write payload failed after %d bytes while flushing: %w", wn, err)
+	}
 
 	t.wbuf.Reset()
 	return t.trans.Flush(ctx)

@@ -7,10 +7,10 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -164,33 +164,32 @@ func connect(opts *Options) (*Conn, error) {
 	addr := net.JoinHostPort(opts.Host, opts.Port)
 
 	var socket thrift.TTransport
-	var err error
 	if opts.UseTLS {
 
 		if opts.CACertPath == "" {
 			return nil, errors.New("Please provide CA certificate path")
 		}
 
-		caCert, err := ioutil.ReadFile(opts.CACertPath)
-		if err != nil {
-			return nil, err
+		caCert, certErr := os.ReadFile(opts.CACertPath)
+		if certErr != nil {
+			return nil, certErr
 		}
 
 		caCertPool := x509.NewCertPool()
 		caCertPool.AppendCertsFromPEM(caCert)
 
-		socket, err = thrift.NewTSSLSocket(addr, &tls.Config{
+		tlsConf := &tls.Config{
 			RootCAs: caCertPool,
+		}
+		socket = thrift.NewTSSLSocketConf(addr, &thrift.TConfiguration{
+			TLSConfig: tlsConf,
 		})
 	} else {
-		socket, err = thrift.NewTSocket(addr)
-	}
-
-	if err != nil {
-		return nil, err
+		socket = thrift.NewTSocketConf(addr, &thrift.TConfiguration{})
 	}
 
 	var transport thrift.TTransport
+	var err error
 	if opts.UseLDAP {
 
 		if opts.Username == "" {

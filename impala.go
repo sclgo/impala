@@ -3,7 +3,6 @@ package impala
 import (
 	"database/sql"
 	"io"
-	"io/ioutil"
 )
 
 func init() {
@@ -30,5 +29,5 @@ type Options struct {
 
 var (
 	// DefaultOptions for impala driver
-	DefaultOptions = Options{BatchSize: 1024, BufferSize: 4096, Port: "21050", LogOut: ioutil.Discard}
+	DefaultOptions = Options{BatchSize: 1024, BufferSize: 4096, Port: "21050", LogOut: io.Discard}
 )

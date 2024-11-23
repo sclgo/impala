@@ -15,9 +15,8 @@ type ResultSet struct {
 	fetchfn func() (*cli_service.TFetchResultsResp, error)
 	schema  *TableSchema
 
-	operation *Operation
-	result    *cli_service.TRowSet
-	more      bool
+	result *cli_service.TRowSet
+	more   bool
 }
 
 // Next ...
